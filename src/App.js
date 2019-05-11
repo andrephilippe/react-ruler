@@ -44,6 +44,7 @@ class App extends Component {
                             start={0}
                             end={20}
                             step={1}
+                            renderValue={value => `${value}%`}
                             className="ruler"
                         />
                     </div>

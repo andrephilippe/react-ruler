@@ -60,6 +60,14 @@ class Pointer extends React.Component {
         window.removeEventListener('mouseup', this.removeMouseListener);
     };
 
+    renderValue(value) {
+        const { renderValue } = this.props;
+        if (renderValue) {
+            return renderValue(value);
+        }
+        return value;
+    }
+
     render() {
         const { position, currentValue } = this.state;
         const { start } = this.props;
@@ -72,7 +80,9 @@ class Pointer extends React.Component {
                     }}
                     onMouseDown={this.addMouseListener}
                 >
-                    <div className="point">{currentValue + start}</div>
+                    <div className="point">
+                        {this.renderValue(currentValue + start)}
+                    </div>
                     <div className="ruler-line" />
                 </div>
             </div>
@@ -95,7 +105,8 @@ class Pointer extends React.Component {
         end: PropTypes.number,
         step: PropTypes.number,
         onDrag: PropTypes.func,
-        ruler: PropTypes.any
+        ruler: PropTypes.any,
+        renderValue: PropTypes.func
     };
 }
 
