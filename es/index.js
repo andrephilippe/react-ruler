@@ -27,7 +27,7 @@ function _createClass(Constructor, protoProps, staticProps) {
 
 var createClass = _createClass;
 
-var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
@@ -4356,27 +4356,13 @@ function getDragObservables(domItem) {
     };
   };
 
-  var mouseDowns = Observable_2.fromEvent(domItem, 'mousedown').map(mouseEventToCoordinate).do(function () {
-    return console.log('mouse down');
-  });
-  var mouseMoves = Observable_2.fromEvent(window, 'mousemove').map(mouseEventToCoordinate).do(function () {
-    return console.log('mouse move');
-  });
-  var mouseUps = Observable_2.fromEvent(window, 'mouseup').map(mouseEventToCoordinate).do(function () {
-    return console.log('mouse up');
-  });
-  var touchStarts = Observable_2.fromEvent(domItem, 'touchstart').map(touchEventToCoordinate).do(function () {
-    return console.log('touch start');
-  });
-  var touchMoves = Observable_2.fromEvent(domItem, 'touchmove').map(touchEventToCoordinate).do(function () {
-    return console.log('touch move');
-  });
-  var touchEnds = Observable_2.fromEvent(window, 'touchend').map(touchEventToCoordinate).do(function () {
-    return console.log('touch end');
-  });
-  var touchCancels = Observable_2.fromEvent(window, 'touchcancel').map(touchEventToCoordinate).do(function () {
-    return console.log('touch cancel');
-  });
+  var mouseDowns = Observable_2.fromEvent(domItem, 'mousedown').map(mouseEventToCoordinate);
+  var mouseMoves = Observable_2.fromEvent(window, 'mousemove').map(mouseEventToCoordinate);
+  var mouseUps = Observable_2.fromEvent(window, 'mouseup').map(mouseEventToCoordinate);
+  var touchStarts = Observable_2.fromEvent(domItem, 'touchstart').map(touchEventToCoordinate);
+  var touchMoves = Observable_2.fromEvent(domItem, 'touchmove').map(touchEventToCoordinate);
+  var touchEnds = Observable_2.fromEvent(window, 'touchend').map(touchEventToCoordinate);
+  var touchCancels = Observable_2.fromEvent(window, 'touchcancel').map(touchEventToCoordinate);
 
   var _starts = mouseDowns.merge(touchStarts);
 
@@ -4384,13 +4370,11 @@ function getDragObservables(domItem) {
 
   var _ends = mouseUps.merge(touchEnds).merge(touchCancels);
 
-  var HOLDING_PERIOD = 200; // milliseconds
+  var HOLDING_PERIOD = 500; // milliseconds
   // Clicks: Take the start-end pairs only if no more than 3 move events happen in between, and the end event is within the holding period
 
   var clicks = _starts.concatMap(function () {
-    return _ends.first().takeUntil(_moves.elementAt(3)).takeUntil(Observable_2.timer(HOLDING_PERIOD)).do(function () {
-      return console.log('click');
-    }).catch(function () {
+    return _ends.first().takeUntil(_moves.elementAt(3)).takeUntil(Observable_2.timer(HOLDING_PERIOD))["catch"](function () {
       return Observable_2.empty();
     });
   }); // Holds: Take those starts where no end event and no more than 3 move event occurs during the holding period
@@ -4402,9 +4386,7 @@ function getDragObservables(domItem) {
         x: dragStartEvent.x,
         y: dragStartEvent.y
       };
-    }).do(function () {
-      return console.log('hold');
-    }).catch(function () {
+    })["catch"](function () {
       return Observable_2.empty();
     });
   }); // Move starts with direction: Pair the move start events with the 3rd subsequent move event,
@@ -4412,7 +4394,7 @@ function getDragObservables(domItem) {
 
 
   var moveStartsWithDirection = _starts.concatMap(function (dragStartEvent) {
-    return _moves.takeUntil(_ends).takeUntil(Observable_2.timer(HOLDING_PERIOD)).elementAt(3).catch(function () {
+    return _moves.takeUntil(_ends).takeUntil(Observable_2.timer(HOLDING_PERIOD)).elementAt(3)["catch"](function () {
       return Observable_2.empty();
     }).map(function (dragEvent) {
       var intialDeltaX = dragEvent.x - dragStartEvent.x;
@@ -4429,14 +4411,10 @@ function getDragObservables(domItem) {
 
   var verticalMoveStarts = moveStartsWithDirection.filter(function (dragStartEvent) {
     return Math.abs(dragStartEvent.intialDeltaX) < Math.abs(dragStartEvent.initialDeltaY);
-  }).do(function () {
-    return console.log('vertical move starts');
   }); // Horizontal move starts: Keep only those move start events where the 3rd subsequent move event is rather horizontal than vertical
 
   var horizontalMoveStarts = moveStartsWithDirection.filter(function (dragStartEvent) {
     return Math.abs(dragStartEvent.intialDeltaX) >= Math.abs(dragStartEvent.initialDeltaY);
-  }).do(function () {
-    return console.log('horizontal move starts');
   }); // Take the moves until an end occurs
 
   var movesUntilEnds = function movesUntilEnds(dragStartEvent) {
@@ -4450,15 +4428,9 @@ function getDragObservables(domItem) {
     });
   };
 
-  var verticalMoves = verticalMoveStarts.concatMap(movesUntilEnds).do(function () {
-    return console.log('vertical move');
-  });
-  var horizontalMoves = horizontalMoveStarts.concatMap(movesUntilEnds).do(function () {
-    return console.log('horizontal move');
-  });
-  var dragMoves = holds.concatMap(movesUntilEnds).do(function () {
-    return console.log('dragging');
-  });
+  var verticalMoves = verticalMoveStarts.concatMap(movesUntilEnds);
+  var horizontalMoves = horizontalMoveStarts.concatMap(movesUntilEnds);
+  var dragMoves = holds.concatMap(movesUntilEnds);
 
   var fastMoveAtEnds = function fastMoveAtEnds(dragStartEvent) {
     return _ends.first().takeUntil(Observable_2.timer(HOLDING_PERIOD)).map(function (dragEndEvent) {
@@ -4473,7 +4445,6 @@ function getDragObservables(domItem) {
 
   var lastMovesAtEnds = function lastMovesAtEnds(dragStartEvent) {
     return _ends.first().map(function (dragEndEvent) {
-      console.log(dragStartEvent, dragEndEvent);
       var x = dragEndEvent.x - dragStartEvent.x;
       var y = dragEndEvent.y - dragStartEvent.y;
       return {
@@ -4484,15 +4455,9 @@ function getDragObservables(domItem) {
   }; // let ends = _starts.concatMap(lastMovesAtEnds);
 
 
-  var verticalMoveEnds = verticalMoveStarts.concatMap(lastMovesAtEnds).do(function () {
-    return console.log('vertical move end');
-  });
-  var horizontalMoveEnds = horizontalMoveStarts.concatMap(lastMovesAtEnds).do(function () {
-    return console.log('horizontal move end');
-  });
-  var dragMoveEnds = holds.concatMap(lastMovesAtEnds).do(function () {
-    return console.log('dragging end');
-  });
+  var verticalMoveEnds = verticalMoveStarts.concatMap(lastMovesAtEnds);
+  var horizontalMoveEnds = horizontalMoveStarts.concatMap(lastMovesAtEnds);
+  var dragMoveEnds = holds.concatMap(lastMovesAtEnds);
   var verticalSwipe = verticalMoveStarts.concatMap(fastMoveAtEnds);
   var horizontalSwipe = horizontalMoveStarts.concatMap(fastMoveAtEnds);
   return {
@@ -4557,7 +4522,7 @@ function (_PureComponent) {
     };
 
     _this.registerDragListener = function () {
-      var _assertThisInitialize = assertThisInitialized(assertThisInitialized(_this)),
+      var _assertThisInitialize = assertThisInitialized(_this),
           point = _assertThisInitialize.point,
           ruler = _assertThisInitialize.ruler;
 
@@ -4620,19 +4585,13 @@ function (_PureComponent) {
       barClickObserver.clicks.forEach(barClick);
     };
 
-    _this.onDragStart = function (x) {
-      console.log(x);
-    };
+    _this.onDragStart = function (x) {};
 
     _this.onDrag = function (x) {
-      console.log(x);
-
       _this.tranformScore(x);
     };
 
-    _this.onDragEnd = function (x) {
-      console.log(x);
-    };
+    _this.onDragEnd = function (x) {};
 
     _this.renderRuler = function () {
       var _this$props3 = _this.props,
@@ -4672,11 +4631,9 @@ function (_PureComponent) {
       return ruleDom;
     };
 
-    var _value = _this.props.value;
     _this.startPercentage = 0;
     _this.containerWidth = 0;
     _this.state = {
-      value: _value,
       percentage: 0.0001,
       offsetWidth: 0,
       test: 0.0001
@@ -4706,9 +4663,6 @@ function (_PureComponent) {
           value = end;
         }
 
-        this.setState({
-          value: value
-        });
         this.transform(value);
       }
     }
@@ -4717,10 +4671,10 @@ function (_PureComponent) {
     value: function render() {
       var _this2 = this;
 
-      var _this$state = this.state,
-          value = _this$state.value,
-          percentage = _this$state.percentage;
-      var start = this.props.start;
+      var percentage = this.state.percentage;
+      var _this$props5 = this.props,
+          start = _this$props5.start,
+          value = _this$props5.value;
       return React.createElement("div", {
         className: "react-ruler-wrapper"
       }, React.createElement("div", {
