@@ -1,65 +1,15 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import Pointer from './pointer';
 import './index.less';
 
 class Ruler extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            initialPosition: 0,
-            initialMousePosition: 0,
-            position: 0,
-            currentValue: 0
+            loading: true
         };
     }
-
-    round(number, increment, offset) {
-        return Math.ceil((number - offset) / increment) * increment + offset;
-    }
-
-    drag = ({ clientX }) => {
-        const { initialMousePosition, initialPosition } = this.state;
-        const { step, start, end, onDrag } = this.props;
-        const rulerWidth = this.ruler.offsetWidth;
-        const distance = end - start;
-        const diff = clientX - initialMousePosition;
-        let position = this.round(
-            initialPosition + diff,
-            (rulerWidth * step) / (end - start),
-            0
-        );
-        if (position > rulerWidth) {
-            position = rulerWidth;
-        }
-        if (position < 0) {
-            position = 0;
-        }
-        const percentage = (position * 100) / rulerWidth;
-        const value = ((distance / 100) * percentage).toFixed(0);
-        this.setState(
-            {
-                position,
-                currentValue: value
-            },
-            () => onDrag(value)
-        );
-    };
-
-    addMouseListener = e => {
-        const { position } = this.state;
-        this.setState(
-            { initialMousePosition: e.clientX, initialPosition: position },
-            () => {
-                window.addEventListener('mousemove', this.drag);
-                window.addEventListener('mouseup', this.removeMouseListener);
-            }
-        );
-    };
-
-    removeMouseListener = () => {
-        window.removeEventListener('mousemove', this.drag);
-        window.removeEventListener('mouseup', this.removeMouseListener);
-    };
 
     renderRuler = () => {
         const { start, end, step } = this.props;
@@ -99,7 +49,7 @@ class Ruler extends PureComponent {
     };
 
     render() {
-        const { position, currentValue } = this.state;
+        const { loading } = this.state;
         return (
             <div className="react-ruler-wrapper">
                 <div className="ruler-container">
@@ -110,18 +60,9 @@ class Ruler extends PureComponent {
                         }}
                     >
                         <div className="ruler-list">{this.renderRuler()}</div>
-                        <div className="ruler-drag">
-                            <div
-                                className="ruler-point"
-                                style={{
-                                    left: `${position}px`
-                                }}
-                                onMouseDown={this.addMouseListener}
-                            >
-                                <div className="point">{currentValue}</div>
-                                <div className="ruler-line" />
-                            </div>
-                        </div>
+                        {!loading ? (
+                            <Pointer {...this.props} ruler={this.ruler} />
+                        ) : null}
                     </div>
                 </div>
             </div>
@@ -129,14 +70,7 @@ class Ruler extends PureComponent {
     }
 
     componentDidMount() {
-        const { startValue, start, end } = this.props;
-        if (startValue) {
-            const distance = end - start;
-            const percentage = (startValue * 100) / distance;
-            const rulerWidth = this.ruler.offsetWidth;
-            const rulerPercentage = (rulerWidth / 100) * percentage;
-            this.drag({ clientX: rulerPercentage });
-        }
+        setTimeout(() => this.setState({ loading: false }), 500);
     }
 
     static propTypes = {

@@ -45,19 +45,20 @@
 }
 .react-ruler-wrapper .ruler-drag .ruler-point .point {
   position: absolute;
-  padding: 0px 9px;
+  width: 30px;
   border-radius: 4px;
   font-size: 14px;
-  background-color: #2acd8f;
+  background-color: #763689;
   color: #FFFFFF;
-  left: -18px;
+  left: -14px;
   margin-bottom: 5px;
   line-height: 24px;
+  text-align: center;
 }
 .react-ruler-wrapper .ruler-drag .ruler-point .ruler-line {
   width: 2px;
   height: 38px;
-  background-color: #2acd8f;
+  background-color: #763689;
   cursor: pointer;
   margin-top: 29px;
 }
