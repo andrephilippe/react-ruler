@@ -37,18 +37,18 @@ class App extends Component {
                 </p>
                 <div className="content">
                     <h3>Ruler {value}</h3>
-                    <div className="custom-ruler" style={{ width: 500 }}>
+                    <div className="custom-ruler">
                         <Ruler
-                            startValue={22}
+                            startValue={10}
                             onDrag={this.handleDragChange}
                             start={0}
-                            end={90}
+                            end={20}
                             step={1}
                             className="ruler"
                         />
                     </div>
                     <div className="form-ruler">
-                        <h3>与antd的Form结合使用</h3>
+                        <h3>Antd Form</h3>
                         <Form>
                             <FormItem>
                                 {getFieldDecorator('score', {

@@ -62,6 +62,7 @@ class Pointer extends React.Component {
 
     render() {
         const { position, currentValue } = this.state;
+        const { start } = this.props;
         return (
             <div className="ruler-drag">
                 <div
@@ -71,7 +72,7 @@ class Pointer extends React.Component {
                     }}
                     onMouseDown={this.addMouseListener}
                 >
-                    <div className="point">{currentValue}</div>
+                    <div className="point">{currentValue + start}</div>
                     <div className="ruler-line" />
                 </div>
             </div>
