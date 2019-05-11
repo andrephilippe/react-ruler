@@ -36,10 +36,10 @@ class App extends Component {
                     reload.
                 </p>
                 <div className="content">
-                    <h3>Ruler</h3>
+                    <h3>Ruler {value}</h3>
                     <div className="custom-ruler" style={{ width: 500 }}>
                         <Ruler
-                            value={value}
+                            startValue={22}
                             onDrag={this.handleDragChange}
                             start={0}
                             end={90}

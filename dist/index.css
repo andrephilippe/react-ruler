@@ -34,7 +34,6 @@
   left: 0;
   bottom: 46px;
   height: 100%;
-  width: 100%;
   z-index: 100;
   -webkit-transform-origin: left;
           transform-origin: left;
@@ -61,6 +60,18 @@
   background-color: #2acd8f;
   cursor: pointer;
   margin-top: 29px;
+}
+* {
+  user-select: none;
+  /* supported by Chrome and Opera */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
 }
 
 
