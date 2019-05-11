@@ -18,14 +18,15 @@ class Ruler extends PureComponent {
         this.startPercentage = 0;
         this.containerWidth = 0;
         this.state = {
-            percentage: 0.0001,
-            offsetWidth: 0,
-            test: 0.0001
+            initialPosition: 0,
+            initialPercentage: 0,
+            percentage: 0.0,
+            offsetWidth: 0
         };
     }
 
     componentDidMount() {
-        this.registerDragListener();
+        // this.registerDragListener();
         this.transform();
     }
 
@@ -174,6 +175,38 @@ class Ruler extends PureComponent {
         return ruleDom;
     };
 
+    mouseListener = e => {
+        const { initialPosition, initialPercentage } = this.state;
+        const { ruler } = this;
+        const width = ruler.offsetWidth;
+        const diff = e.clientX - initialPosition;
+        let currPercentage = initialPercentage + (100 / width) * (0.01 * diff);
+        console.log((100 / width) * (0.01 * diff));
+        if (currPercentage > 0.99) {
+            currPercentage = 0.9999;
+        }
+
+        if (currPercentage < 0) {
+            currPercentage = 0.0001;
+        }
+
+        this.setState({
+            percentage: currPercentage
+        });
+    };
+
+    addMouseListener = e => {
+        const { percentage } = this.state;
+        this.setState(
+            { initialPosition: e.clientX, initialPercentage: percentage },
+            () => window.addEventListener('mousemove', this.mouseListener)
+        );
+    };
+
+    removeMouseListener = () => {
+        window.removeEventListener('mousemove', this.mouseListener);
+    };
+
     render() {
         const { percentage } = this.state;
         const { start, value } = this.props;
@@ -201,6 +234,9 @@ class Ruler extends PureComponent {
                                 style={{
                                     transform: `scaleX(${1 / percentage})`
                                 }}
+                                onMouseDown={this.addMouseListener}
+                                onMouseUp={this.removeMouseListener}
+                                onMouseLeave={this.removeMouseListener}
                             >
                                 <div className="point">{value || start}</div>
                                 <div className="ruler-line" />
