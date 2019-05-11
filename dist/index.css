@@ -45,7 +45,8 @@
 }
 .react-ruler-wrapper .ruler-drag .ruler-point .point {
   position: absolute;
-  width: 30px;
+  min-width: 30px;
+  padding: 0 5px;
   border-radius: 4px;
   font-size: 14px;
   background-color: #763689;
