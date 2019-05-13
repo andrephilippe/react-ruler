@@ -17,12 +17,14 @@ class Pointer extends React.Component {
         return Math.ceil((number - offset) / increment) * increment + offset;
     }
 
-    drag = ({ clientX }) => {
+    drag = e => {
         const { initialMousePosition, initialPosition } = this.state;
         const { step, start, end, onDrag, ruler } = this.props;
         const rulerWidth = ruler.offsetWidth;
         const distance = end - start;
-        const diff = clientX - initialMousePosition;
+        const diff =
+            (e.clientX ? e.clientX : e.touches[0].clientX) -
+            initialMousePosition;
         let position = this.round(
             initialPosition + diff,
             (rulerWidth * step) / (end - start),
@@ -64,11 +66,39 @@ class Pointer extends React.Component {
         );
     };
 
+    addTouchListener = e => {
+        const { onDragStart } = this.props;
+        const { position, currentValue } = this.state;
+        this.setState(
+            {
+                initialMousePosition: e.touches[0].clientX,
+                initialPosition: position
+            },
+            () => {
+                window.addEventListener('touchmove', this.drag);
+                window.addEventListener('touchend', this.removeTouchListener);
+                if (onDragStart) {
+                    onDragStart(currentValue);
+                }
+            }
+        );
+    };
+
     removeMouseListener = () => {
         const { onDragEnd } = this.props;
         const { currentValue } = this.state;
         window.removeEventListener('mousemove', this.drag);
         window.removeEventListener('mouseup', this.removeMouseListener);
+        if (onDragEnd) {
+            onDragEnd(currentValue);
+        }
+    };
+
+    removeTouchListener = () => {
+        const { onDragEnd } = this.props;
+        const { currentValue } = this.state;
+        window.removeEventListener('touchmove', this.drag);
+        window.removeEventListener('touchend', this.removeTouchListener);
         if (onDragEnd) {
             onDragEnd(currentValue);
         }
@@ -93,6 +123,7 @@ class Pointer extends React.Component {
                         left: `${position}px`
                     }}
                     onMouseDown={this.addMouseListener}
+                    onTouchStart={this.addTouchListener}
                 >
                     <div
                         className="point"
