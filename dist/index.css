@@ -45,16 +45,32 @@
 }
 .react-ruler-wrapper .ruler-drag .ruler-point .point {
   position: absolute;
-  min-width: 30px;
   padding: 0 5px;
-  border-radius: 4px;
   font-size: 14px;
+  font-weight: 600;
   background-color: #763689;
   color: #FFFFFF;
-  left: -14px;
   margin-bottom: 5px;
   line-height: 24px;
-  text-align: center;
+  height: 30px;
+  min-width: 48px;
+  border-radius: 4px;
+  top: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+.react-ruler-wrapper .ruler-drag .ruler-point .point:after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 10px 0 10px;
+  border-color: #763689 transparent transparent transparent;
+  line-height: 0px;
 }
 .react-ruler-wrapper .ruler-drag .ruler-point .ruler-line {
   width: 2px;
