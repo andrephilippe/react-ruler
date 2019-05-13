@@ -10,6 +10,7 @@ class Pointer extends React.Component {
             position: 0,
             currentValue: 0
         };
+        this.pointer = React.createRef();
     }
 
     round(number, increment, offset) {
@@ -40,24 +41,37 @@ class Pointer extends React.Component {
                 position,
                 currentValue: value
             },
-            () => onDrag(value)
+            () => {
+                if (onDrag) {
+                    () => onDrag(value);
+                }
+            }
         );
     };
 
     addMouseListener = e => {
-        const { position } = this.state;
+        const { onDragStart } = this.props;
+        const { position, currentValue } = this.state;
         this.setState(
             { initialMousePosition: e.clientX, initialPosition: position },
             () => {
                 window.addEventListener('mousemove', this.drag);
                 window.addEventListener('mouseup', this.removeMouseListener);
+                if (onDragStart) {
+                    onDragStart(currentValue);
+                }
             }
         );
     };
 
     removeMouseListener = () => {
+        const { onDragEnd } = this.props;
+        const { currentValue } = this.state;
         window.removeEventListener('mousemove', this.drag);
         window.removeEventListener('mouseup', this.removeMouseListener);
+        if (onDragEnd) {
+            onDragEnd(currentValue);
+        }
     };
 
     renderValue(value) {
@@ -80,7 +94,17 @@ class Pointer extends React.Component {
                     }}
                     onMouseDown={this.addMouseListener}
                 >
-                    <div className="point">
+                    <div
+                        className="point"
+                        ref={this.pointer}
+                        style={{
+                            left: `-${
+                                this.pointer.current
+                                    ? this.pointer.current.offsetWidth / 2 - 1
+                                    : 23
+                            }px`
+                        }}
+                    >
                         {this.renderValue(currentValue + start)}
                     </div>
                     <div className="ruler-line" />
@@ -101,12 +125,14 @@ class Pointer extends React.Component {
     }
 
     static propTypes = {
-        start: PropTypes.number,
-        end: PropTypes.number,
-        step: PropTypes.number,
+        start: PropTypes.number.isRequired,
+        end: PropTypes.number.isRequired,
+        step: PropTypes.number.isRequired,
+        ruler: PropTypes.any.isRequired,
+        renderValue: PropTypes.func,
         onDrag: PropTypes.func,
-        ruler: PropTypes.any,
-        renderValue: PropTypes.func
+        onDragEnd: PropTypes.func,
+        onDragStart: PropTypes.func
     };
 }
 

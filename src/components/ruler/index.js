@@ -78,12 +78,17 @@ class Ruler extends PureComponent {
         start: PropTypes.number,
         end: PropTypes.number,
         step: PropTypes.number,
-        onDrag: PropTypes.func,
         className: PropTypes.string,
-        renderValue: PropTypes.func
+        renderValue: PropTypes.func,
+        onDrag: PropTypes.func,
+        onDragEnd: PropTypes.func,
+        onDragStart: PropTypes.func
     };
 
     static defaultProps = {
+        startValue: 0,
+        start: 0,
+        end: 100,
         step: 1
     };
 }

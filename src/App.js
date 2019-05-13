@@ -19,6 +19,14 @@ class App extends Component {
         this.setState({ value });
     };
 
+    handleDragEnd = value => {
+        console.log(`drag end: ${value}`);
+    };
+
+    handleDragStart = value => {
+        console.log(`drag start: ${value}`);
+    };
+
     render() {
         const { value } = this.state;
         const { getFieldDecorator } = this.props.form;
@@ -40,12 +48,14 @@ class App extends Component {
                     <div className="custom-ruler">
                         <Ruler
                             startValue={10}
-                            onDrag={this.handleDragChange}
                             start={0}
                             end={20}
                             step={1}
                             renderValue={value => `${value}%`}
                             className="ruler"
+                            onDrag={this.handleDragChange}
+                            onDragEnd={this.handleDragEnd}
+                            onDragStart={this.handleDragStart}
                         />
                     </div>
                     <div className="form-ruler">
