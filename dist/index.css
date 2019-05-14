@@ -71,6 +71,9 @@
   border-width: 10px 10px 0 10px;
   border-color: #763689 transparent transparent transparent;
   line-height: 0px;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 .react-ruler-wrapper .ruler-drag .ruler-point .ruler-line {
   width: 2px;
