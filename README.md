@@ -1,34 +1,20 @@
-# rc-ruler
+# rc-ruler-slider
 
-> Ruler component for React
+> Slider component for React 
 
-# Why
-
-![设计稿](./src/assets/ui.png "设计稿")
-
-*为了实现上面的设计，折腾了一个这样的轮子。*
-
-### 效果如下
-![效果](./src/assets/result.png "效果")
-
-* 仅支持PC端
-* 支持拖拽、点击来选择相应的值
-* 可以和Ant-Design的Form结合
-* 依赖rxjs处理事件(按需加载)
-
-
+![alt text](https://i.imgur.com/MI2pqB1.png)
 
 ## Install
 
 ```bash
-npm install rc-ruler --save
+npm install rc-ruler-slider --save
 ```
 
 ## Usage
 
 ``` js
-import Ruler from 'rc-ruler/dist';
-import 'rc-ruler/dist/index.css';
+import Ruler from 'rc-ruler-slider/dist';
+import 'rc-ruler-slider/dist/index.css';
 ```
 
 ``` js
@@ -44,14 +30,19 @@ handleDragStart = (value) => {
    console.log(value);
 }
 
+handleRenderValue = (value) => {
+   return `${value}%`;
+}
+
 <Ruler
-   value={value}
+   startValue={50}
    onDrag={this.handleDragChange}
    onDragEnd={this.handleDragEnd}
    onDragStart={this.handleDragStart}
-   start={20}
-   end={99}
-   step={2}
+   renderValue={this.handleRenderValue)
+   start={0}
+   end={90}
+   step={1}
 />
 ```
 
