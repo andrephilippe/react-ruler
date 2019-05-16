@@ -27,7 +27,7 @@ npm install rc-ruler --save
 ## Usage
 
 ``` js
-import Ruler from 'rc-ruler';
+import Ruler from 'rc-ruler/dist';
 import 'rc-ruler/dist/index.css';
 ```
 
@@ -36,9 +36,19 @@ handleDragChange = (value) => {
    console.log(value);
 }
 
+handleDragEnd = (value) => {
+   console.log(value);
+}
+
+handleDragStart = (value) => {
+   console.log(value);
+}
+
 <Ruler
    value={value}
    onDrag={this.handleDragChange}
+   onDragEnd={this.handleDragEnd}
+   onDragStart={this.handleDragStart}
    start={20}
    end={99}
    step={2}
@@ -64,6 +74,12 @@ handleDragChange = (value) => {
 
       // handle drag function
       onDrag: PropTypes.func,
+      
+      // handle drag end function
+      onDragEnd: PropTypes.func,
+      
+      // handle drag start function
+      onDragStart: PropTypes.func,
 
       // class of component
       className: PropTypes.string,
