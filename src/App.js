@@ -57,7 +57,7 @@ class App extends Component {
                             onDragEnd={this.handleDragEnd}
                             onDragStart={this.handleDragStart}
                         />
-                    </div>
+                    </div> 
                     <div className="form-ruler">
                         <h3>Antd Form</h3>
                         <Form>
