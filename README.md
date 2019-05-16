@@ -51,10 +51,10 @@ handleRenderValue = (value) => {
 ```js
    propTypes: {
 
-      // current value
-      value: PropTypes.number,
+      // start current ruler value
+      startValue: PropTypes.number,
 
-      // start value
+      // start ruler value
       start: PropTypes.number,
 
       // end value
@@ -71,6 +71,9 @@ handleRenderValue = (value) => {
       
       // handle drag start function
       onDragStart: PropTypes.func,
+      
+      // handle custom render value in ruler pointer
+      onRenderValue: PropTypes.func,
 
       // class of component
       className: PropTypes.string,
